@@ -1,9 +1,9 @@
 
 % input color image
-Im = im2double(imread('./imgs/2.png'));
+Im = im2double(imread('./imgs/tt.jpg'));
 
 % Part 1: Basic Decolorization Algorithm
-gIm = cprgb2gray(Im);
+gIm = full(cprgb2gray(Im));
 
 % Part 2: Decolorization Evaluation: Color Contrast Preserving Ratio (CCPR)
 ccprRes = 0;
