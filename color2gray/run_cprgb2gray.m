@@ -1,6 +1,6 @@
 
 % input color image
-Im = im2double(imread('./imgs/tt.jpg'));
+Im = im2double(imread('./imgs/4.png'));
 
 % Part 1: Basic Decolorization Algorithm
 gIm = full(cprgb2gray(Im));

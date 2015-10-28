@@ -56,7 +56,7 @@ function gIm = cprgb2gray(im)
                 indexX(count) = index + imgSize(2);
             end
             count = count + 1;
-            delta(index) = deltaB(i, j);
+            delta(indexLowwer) = deltaB(i, j);
         end
     end
     
@@ -65,8 +65,8 @@ function gIm = cprgb2gray(im)
     
     A = sparse(indexY, indexX, value);
     delta = sparse(delta);
-    G = delta\A;
-    gIm = reshape(G, [imgSize(1), imgSize(2)]);
+    G = A \ delta;
+    gIm = transpose(reshape(G, [imgSize(2), imgSize(1)]));
     
 
 	% Normalization and output gIm
