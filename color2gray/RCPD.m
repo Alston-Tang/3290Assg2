@@ -42,10 +42,6 @@ gImg = gImg + rgbImg(:,:,1) * rBest;
 gImg = gImg + rgbImg(:,:,2) * gBest;
 gImg = gImg + rgbImg(:,:,3) * bBest;
 
-disp(rBest);
-disp(gBest);
-disp(bBest);
-
 
 end
 

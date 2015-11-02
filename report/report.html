@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <!-- Responsive viewport for smartphone devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- least.js 2 CSS file -->
+    <link href="least/css/least.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+</head>
+<body>
+<div class="ui grid centered" style="margin-top: 20px; margin-bottom: 50px">
+    <div class="fourteen wide column">
+        <h1>Assignment 2</h1>
+        <h2>Color Transfer & Contrast Preserving Decolorization</h2>
+    </div>
+</div>
+
+
+<div class="ui grid centered">
+    <div class="fourteen wide column">
+        <h2 class="ui header dividing">Color Transfer between Images</h2>
+        <div class="ui segment">
+            <p>This process is just followed the specification step by step. Firstly convert the image to LAB space using a special coefficient given.
+                Then change the whole color tone while try to keep the original contrast between two pixels. Then convert back to RGB space. However, only few
+                of the outcomes are acceptable. The results are shown below.</p>
+        </div>
+        <section id="test" class="least">
+
+            <!-- Least Gallery: Fullscreen Preview -->
+            <div class="least-preview"></div>
+
+            <!-- Least Gallery: Thumbnails -->
+            <ul class="least-gallery">
+                <!-- 1th thumbnail -->
+                <li>
+                    <a href="imgs/trans1.jpg" data-subtitle="View Picture" data-caption="Ocean Day -> Ocean Sunset" >
+                        <img src="imgs/trans1.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/trans2.jpg" data-subtitle="View Picture" data-caption="Storm -> Woods" >
+                        <img src="imgs/trans2.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/trans3.jpg" data-subtitle="View Picture" data-caption="Fallingwater -> Autumn">
+                        <img src="imgs/trans3.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/trans4.jpg" data-subtitle="View Picture" data-caption="Woods -> Storm">
+                        <img src="imgs/trans4.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>
+
+<div class="ui grid centered">
+    <div class="fourteen wide column">
+        <h2 class="ui header dividing">Basic Decolorization Algorithm</h2>
+        <div class="ui segment">
+            <p>The algorithm tries to minimize the objective function <b>gp-gq-&delta;pq</b>. For each pixel, we consider two of its neighbours, the left one and the bottom one. Hence we can construct 2*pixelSize's equation and fianlly minimize it using the <b>\</b> in matlab. The built in function <b>inv</b> here is useless because rather than solve it, we need to minimize it according to objective function.</p>
+            <p>For small pictures, the solver can solve it pretty fast.</p>
+        </div>
+    </div>
+</div>
+
+<div class="ui grid centered">
+    <div class="fourteen wide column">
+        <h2 class="ui header dividing">Contrast Preserving Decolorization Algorithm(CPD)</h2>
+        <div class="ui segment">
+            <p>Instead of only only considering preserving the difference between two pixels, CPD gives those pixels that can not be easily ordered more freedom to adjust its intensity while still keep the original order for those weak color pixels pairs. For example, it is hard to compare the intensity between green and blue pixels. However, a white pixel is definitely brighter than a black pixel. The algorithm achieve this by changing the linear objective model into possibility model of a normal distribution. For weak color pairs, the distribution model has only one wave that achieve a high energy value, which is a value should be maximized. Other pairs, however, have two waves to give them more freedom to generate high contrast. To simplify color mapping, the algorithm only consider 2nd order of color combination, which includes{r, g, b, rg, rb, gb, r^2, g^2, b^2}</p>
+            <p>The algorithm is slower than the first one. One reason is more constant time to compute more differences. Another reason is that the inefficient implementation in my code.</p>
+            <p><b>&sigma;=6</b></p>
+        </div>
+    </div>
+</div>
+
+<div class="ui grid centered">
+    <div class="fourteen wide column">
+        <h2 class="ui header dividing">Linearly Searching Decolorization Algorithm(LSD)</h2>
+        <div class="ui segment">
+            <p>In order to boost the decolorization speed, LSD use the simplest 1st order of color combination, which only include {r, g, b} and conduct a linear combination. This relaxing let exhaustively searching becomes possible. The searching traverse all the combination of r, g, b from 0 to 1 with the step 0.1 and sum of three value equal to 1. Then for each combination, calculate the energy function <b>-sum(ln(&alpha;*G(&delta;, &sigma;)+(1-&alpha;)*G(&delta;, &sigma;)))</b> and use the combination with the minimum energy value</p>
+            <p>The algorithm gives the results as good as CPD in most of testing images. But some of them have significant drawback. However the speed is much faster </p>
+            <p><b>&sigma;=6</b></p>
+        </div>
+    </div>
+</div>
+
+<div class="ui grid centered">
+    <div class="fourteen wide column">
+        <h2 class="ui header dividing">Results Comparison</h2>
+        <h4>Original Picture</h4>
+        <section id="least" class="least">
+
+            <!-- Least Gallery: Fullscreen Preview -->
+            <div class="least-preview"></div>
+
+            <!-- Least Gallery: Thumbnails -->
+            <ul class="least-gallery">
+                <!-- 1th thumbnail -->
+                <li>
+                    <a href="imgs/1.png" data-subtitle="View Picture" >
+                        <img src="imgs/1.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/2.png" data-subtitle="View Picture">
+                        <img src="imgs/2.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/3.png" data-subtitle="View Picture">
+                        <img src="imgs/3.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/4.png" data-subtitle="View Picture">
+                        <img src="imgs/4.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/5.png" data-subtitle="View Picture" >
+                        <img src="imgs/5.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/6.png" data-subtitle="View Picture">
+                        <img src="imgs/6.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/7.png" data-subtitle="View Picture">
+                        <img src="imgs/7.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/8.png" data-subtitle="View Picture">
+                        <img src="imgs/8.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/9.png" data-subtitle="View Picture" >
+                        <img src="imgs/9.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/10.png" data-subtitle="View Picture">
+                        <img src="imgs/10.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/11.png" data-subtitle="View Picture">
+                        <img src="imgs/11.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/12.png" data-subtitle="View Picture">
+                        <img src="imgs/12.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/13.png" data-subtitle="View Picture" >
+                        <img src="imgs/13.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/14.png" data-subtitle="View Picture">
+                        <img src="imgs/14.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/15.png" data-subtitle="View Picture">
+                        <img src="imgs/15.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/16.png" data-subtitle="View Picture">
+                        <img src="imgs/16.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/17.png" data-subtitle="View Picture" >
+                        <img src="imgs/17.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/18.png" data-subtitle="View Picture">
+                        <img src="imgs/18.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/19.png" data-subtitle="View Picture">
+                        <img src="imgs/19.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/20.png" data-subtitle="View Picture">
+                        <img src="imgs/20.png" alt="Alt Image Text" />
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <h4>Basic Decolorization Algorithm</h4>
+        <section id="least2" class="least">
+
+            <!-- Least Gallery: Fullscreen Preview -->
+            <div class="least-preview"></div>
+
+            <!-- Least Gallery: Thumbnails -->
+            <ul class="least-gallery">
+                <!-- 1th thumbnail -->
+                <li>
+                    <a href="imgs/res_basic_1.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_basic_1.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_2.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_2.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_3.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_3.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_4.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_4.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_5.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_basic_5.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_6.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_6.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_7.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_7.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_8.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_8.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_9.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_basic_9.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_10.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_10.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_11.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_11.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_12.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_12.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_13.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_basic_13.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_14.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_14.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_15.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_15.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_16.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_16.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_17.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_basic_17.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_18.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_18.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_19.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_19.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_basic_20.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_basic_20.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <h4>Contrast Preserving Decolorization Algorithm</h4>
+        <section id="least3" class="least">
+
+            <!-- Least Gallery: Fullscreen Preview -->
+            <div class="least-preview"></div>
+
+            <!-- Least Gallery: Thumbnails -->
+            <ul class="least-gallery">
+                <!-- 1th thumbnail -->
+                <li>
+                    <a href="imgs/res_cpd_1.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_cpd_1.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_2.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_2.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_3.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_3.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_4.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_4.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_5.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_cpd_5.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_6.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_6.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_7.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_7.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_8.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_8.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_9.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_cpd_9.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_10.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_10.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_11.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_11.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_12.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_12.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_13.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_cpd_13.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_14.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_14.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_15.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_15.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_16.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_16.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_17.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_cpd_17.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_18.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_18.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_19.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_19.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_cpd_20.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_cpd_20.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <h4>Linearly Searching Decolorization Algorithm</h4>
+        <section id="least4" class="least">
+
+            <!-- Least Gallery: Fullscreen Preview -->
+            <div class="least-preview"></div>
+
+            <!-- Least Gallery: Thumbnails -->
+            <ul class="least-gallery">
+                <!-- 1th thumbnail -->
+                <li>
+                    <a href="imgs/res_rcpd_1.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_rcpd_1.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_2.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_2.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_3.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_3.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_4.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_4.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_5.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_rcpd_5.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_6.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_6.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_7.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_7.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_8.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_8.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_9.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_rcpd_9.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_10.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_10.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_11.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_11.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_12.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_12.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_13.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_rcpd_13.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_14.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_14.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_15.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_15.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_16.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_16.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_17.jpg" data-subtitle="View Picture" >
+                        <img src="imgs/res_rcpd_17.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_18.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_18.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_19.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_19.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+                <li>
+                    <a href="imgs/res_rcpd_20.jpg" data-subtitle="View Picture">
+                        <img src="imgs/res_rcpd_20.jpg" alt="Alt Image Text" />
+                    </a>
+                </li>
+            </ul>
+        </section>
+
+        <h4>CCPR Score</h4>
+
+        <table class="ui celled padded table">
+            <thead>
+            <tr><th class="single line">Photo</th>
+                <th>Basic</th>
+                <th>CPD</th>
+                <th>LSD</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+                <td>
+                    <img src="imgs/1.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.803353
+                </td>
+                <td>
+                    0.806860
+                </td>
+                <td>
+                    0.804224
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/2.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.997611
+                </td>
+                <td>
+                    0.980979
+                </td>
+                <td>
+                    0.984931
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/3.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.964507
+                </td>
+                <td>
+                    0.898354
+                </td>
+                <td>
+                    0.887401
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/4.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.831743
+                </td>
+                <td>
+                    0.781401
+                </td>
+                <td>
+                    0.794839
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/5.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.903078
+                </td>
+                <td>
+                    0.926136
+                </td>
+                <td>
+                    0.931971
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/6.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.847126
+                </td>
+                <td>
+                    0.767835
+                </td>
+                <td>
+                    0.773139
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/7.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.848114
+                </td>
+                <td>
+                    0.814276
+                </td>
+                <td>
+                    0.447553
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/8.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.934866
+                </td>
+                <td>
+                    0.903489
+                </td>
+                <td>
+                    0.821911
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/9.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.692453
+                </td>
+                <td>
+                    0.734248
+                </td>
+                <td>
+                    0.842059
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/10.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.905401
+                </td>
+                <td>
+                    0.886956
+                </td>
+                <td>
+                    0.865421
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/11.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.938558
+                </td>
+                <td>
+                    0.955263
+                </td>
+                <td>
+                    0.924241
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/12.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.902301
+                </td>
+                <td>
+                    0.834751
+                </td>
+                <td>
+                    0.725435
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/13.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.746153
+                </td>
+                <td>
+                    0.639170
+                </td>
+                <td>
+                    0.627615
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/14.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.885437
+                </td>
+                <td>
+                    0.849431
+                </td>
+                <td>
+                    0.844199
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/15.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.839905
+                </td>
+                <td>
+                    0.790341
+                </td>
+                <td>
+                    0.744677
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/16.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.874876
+                </td>
+                <td>
+                    0.862949
+                </td>
+                <td>
+                    0.856934
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/17.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.971412
+                </td>
+                <td>
+                    0.861963
+                </td>
+                <td>
+                    0.729796
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/18.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.941370
+                </td>
+                <td>
+                    0.893502
+                </td>
+                <td>
+                    0.895369
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/19.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.886541
+                </td>
+                <td>
+                    0.852062
+                </td>
+                <td>
+                    0.861497
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <img src="imgs/20.png" style="max-height: 80px">
+                </td>
+                <td>
+                    0.816309
+                </td>
+                <td>
+                    0.505548
+                </td>
+                <td>
+                    0.662622
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="ui grid centered">
+    <div class="fourteen wide column">
+        <h2 class="ui header dividing">Time Performance</h2>
+        <div class="ui segment">
+            <p>Test Platform: Intel i7 5820K with 16GB RAM</p>
+            <p>Test Method: Process 20 images, count the total processing time. The total time includes file reading and writing.</p>
+        </div>
+        <table class="ui celled padded table">
+            <thead>
+            <tr>
+                <th>Basic</th>
+                <th>CPD</th>
+                <th>LSD</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+                <td>
+                    0.803353
+                </td>
+                <td>
+                    0.806860
+                </td>
+                <td>
+                    0.804224
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="ui grid centered">
+    <div class="fourteen wide column">
+        <h2 class="ui header dividing">Reference</h2>
+        <ol>
+            <li>Cewu Lu*, Li Xu, Jiaya Jia, Contrast Preserving Decolorization with Perceptual-Based Quality Metrics, International Journal of Computer Vision (IJCV), Vol. 110, No. 2, Pages 222-239, 2014.</li>
+            <li>Cewu Lu*, Li Xu*,  Jiaya Jia, Contrast Preserving Decolorization, IEEE International Conference on Computational Photography (ICCP), 2012.</li>
+        </ol>
+    </div>
+</div>
+
+
+<!-- jQuery library -->
+<script src="least/js/libs/jquery/2.0.2/jquery.min.js"></script>
+<!-- least.js 2 library -->
+<script src="least/js/libs/least/least.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#test').find('.least-gallery').least({$container: $("#test")});
+        $('#least').find('.least-gallery').least({$container: $("#least")});
+        $('#least2').find('.least-gallery').least({$container: $("#least2")});
+        $('#least3').find('.least-gallery').least({$container: $("#least3")});
+        $('#least4').find('.least-gallery').least({$container: $("#least4")});
+    });
+</script>
+</body>
+</html>

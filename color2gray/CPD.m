@@ -1,6 +1,6 @@
 function gImg = CPD( rgbImg )
 
-sigmaV = 4.5;
+sigmaV = 6;
 
 labImg = rgb2lab(rgbImg);
 l = labImg(: , :, 1);

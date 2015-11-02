@@ -1,10 +1,10 @@
 
 % input color image
-Im = im2double(imread('./imgs/2.png'));
+Im = im2double(imread('./imgs/7.png'));
 
 % Part 1: Basic Decolorization Algorithm
-% gIm = full(cprgb2gray(Im));
-gIm = RCPD(Im);
+gIm = full(cprgb2gray(Im));
+% gIm = CPD(Im);
 
 imwrite(gIm, 'tt.bmp');
 
@@ -15,5 +15,5 @@ for tau = 1:15
     ccprRes = ccprRes + ccpr;
 end
 
-fprintf('CCPR is %f', ccprRes/24);
+fprintf('CCPR is %f', ccprRes/15);
 figure, imshow(Im), figure, imshow(gIm);
